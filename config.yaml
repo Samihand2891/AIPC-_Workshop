@@ -1,0 +1,281 @@
+# config.yaml
+# Configuration file for the Insurance Policy Analysis Pipeline
+# This file manages paths to trained models and system settings
+
+# Model Paths
+model_paths:
+  # Path to the fine-tuned NER model (Legal-BERT based)
+  ner: "./models/ner_legal_bert_insurance/"
+  
+  # Path to the fine-tuned LayoutLMv3 model for form extraction
+  # Need to Uncomment when you have trained this model
+  # layout: "./models/layoutlmv3_insurance_forms/"
+  
+  # Path to the spaCy model with custom relation extraction component
+  # Need to Uncomment when you have trained this model
+  # relations: "./models/relation_extractor_spacy/"
+
+# Document Processing Settings
+document_processing:
+  # Minimum number of characters per page to consider a PDF as digital-native
+  # If extracted text is below this threshold, OCR will be triggered
+  min_text_length_threshold: 100
+  
+  # Maximum file size in MB for upload
+  max_file_size_mb: 50
+  
+  # Supported file formats
+  supported_formats:
+    - pdf
+
+# NER Model Settings
+ner_settings:
+  # Entity types to extract
+  entity_labels:
+    - INSURED_PARTY
+    - POLICY_NUMBER
+    - EFFECTIVE_DATE
+    - EXPIRATION_DATE
+    - COVERAGE_LIMIT
+    - DEDUCTIBLE
+    - PREMIUM
+    - INSURER
+    - BROKER
+    - CERTIFICATE_HOLDER
+    - COVERAGE_TYPE
+    - POLICY_PERIOD
+  
+  # NER inference settings
+  aggregation_strategy: "simple"  # Options: simple, first, average, max
+  
+  # Confidence threshold for entity extraction (0.0 to 1.0)
+  confidence_threshold: 0.5
+
+# Relation Extraction Settings
+relation_extraction:
+  # Relationship types to extract
+  relation_labels:
+    - ISSUED_TO
+    - HAS_POLICY_NUMBER
+    - HAS_COVERAGE_LIMIT
+    - HAS_DEDUCTIBLE
+    - EFFECTIVE_FROM
+    - EXPIRES_ON
+    - COVERS_PROPERTY
+    - INSURED_BY
+    - BROKERED_BY
+  
+  # Maximum distance (in tokens) between entities to consider for relation extraction
+  max_entity_distance: 50
+
+# OCR Settings
+ocr_settings:
+  # OCRmyPDF settings
+  deskew: true
+  force_ocr: true
+  skip_text: true
+  
+  # Language for OCR (Tesseract language codes)
+  language: "eng"
+  
+  # Output format
+  output_type: "pdf"  # Options: pdf, pdfa, pdfa-1, pdfa-2, pdfa-3
+
+# LayoutLM Settings (for form extraction)
+layoutlm_settings:
+  # Enable layout-aware extraction
+  enabled: false  # Set to true when model is available
+  
+  # Apply OCR within LayoutLM processor
+  apply_ocr: false
+  
+  # Maximum sequence length
+  max_seq_length: 512
+
+# Output Settings
+output:
+  # Include raw text in output
+  include_raw_text: true
+  
+  # Include bounding box coordinates for entities
+  include_bounding_boxes: false
+  
+  # Format for structured output
+  output_format: "json"  # Options: json, xml, csv
+  
+  # Pretty print JSON output
+  json_indent: 2
+
+# Logging Settings
+logging:
+  # Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  level: "INFO"
+  
+  # Log file path (leave empty to log to console only)
+  log_file: ""
+  
+  # Log format
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# Performance Settings
+performance:
+  # Use GPU if available
+  use_gpu: true
+  
+  # Batch size for model inference
+  batch_size: 8
+  
+  # Number of worker threads for document processing
+  num_workers: 4
+
+# Storage Settings
+storage:
+  # Directory for temporary file storage
+  temp_dir: "./temp/"
+  
+  # Directory for uploaded files
+  upload_dir: "./uploaded_files/"
+  
+  # Directory for processed output
+  output_dir: "./output/"
+  
+  # Automatically clean up temporary files after processing
+  auto_cleanup: true
+  
+  # Retention period for uploaded files (in days)
+  retention_days: 7
+
+# API Settings (for future production deployment)
+api:
+  # API host
+  host: "0.0.0.0"
+  
+  # API port
+  port: 8000
+  
+  # Enable CORS
+  enable_cors: true
+  
+  # API rate limiting (requests per minute)
+  rate_limit: 60
+  
+  # API authentication
+  require_auth: false
+  
+  # API key (set this in production)
+  api_key: ""
+
+# Streamlit UI Settings
+streamlit:
+  # Page title
+  page_title: "AI Insurance Policy Analyzer"
+  
+  # Page icon (emoji or path to icon file)
+  page_icon: "📄"
+  
+  # Layout: "centered" or "wide"
+  layout: "wide"
+  
+  # Theme
+  theme:
+    primaryColor: "#1f77b4"
+    backgroundColor: "#ffffff"
+    secondaryBackgroundColor: "#f0f2f6"
+    textColor: "#262730"
+    font: "sans serif"
+
+# Feature Flags
+features:
+  # Enable experimental features
+  enable_experimental: false
+  
+  # Enable form extraction with LayoutLM
+  enable_form_extraction: false
+  
+  # Enable relation extraction
+  enable_relation_extraction: true
+  
+  # Enable fraud detection module
+  enable_fraud_detection: false
+  
+  # Enable coverage verification
+  enable_coverage_verification: false
+
+# Model Training Settings (for reference)
+training:
+  # Base model for NER
+  ner_base_model: "nlpaueb/legal-bert-base-uncased"
+  
+  # Base model for layout analysis
+  layout_base_model: "microsoft/layoutlmv3-base"
+  
+  # Training hyperparameters
+  learning_rate: 2e-5
+  num_epochs: 5
+  batch_size: 8
+  weight_decay: 0.01
+  
+  # Early stopping patience
+  early_stopping_patience: 3
+
+# Data Annotation Settings
+annotation:
+  # Annotation tool: doccano, label-studio, prodigy
+  tool: "doccano"
+  
+  # Annotation schema version
+  schema_version: "1.0"
+  
+  # Inter-annotator agreement threshold
+  iaa_threshold: 0.8
+
+# Monitoring and Evaluation
+monitoring:
+  # Enable model performance monitoring
+  enabled: false
+  
+  # Metrics to track
+  metrics:
+    - precision
+    - recall
+    - f1_score
+    - accuracy
+  
+  # Alert threshold for performance degradation
+  alert_threshold: 0.7
+  
+  # Evaluation frequency (in days)
+  eval_frequency: 30
+
+# Integration Settings
+integrations:
+  # Database connection (for future use)
+  database:
+    enabled: false
+    type: "postgresql"  # Options: postgresql, mysql, mongodb
+    host: "localhost"
+    port: 5432
+    database: "insurance_policies"
+    username: ""
+    password: ""
+  
+  # Vector database for semantic search (for future use)
+  vector_db:
+    enabled: false
+    type: "pinecone"  # Options: pinecone, weaviate, milvus
+    api_key: ""
+    environment: ""
+    index_name: "insurance-policies"
+  
+  # Cloud storage (for future use)
+  cloud_storage:
+    enabled: false
+    provider: "aws_s3"  # Options: aws_s3, azure_blob, gcp_storage
+    bucket_name: ""
+    credentials_path: ""
+
+# Version Information
+version:
+  pipeline: "1.0.0"
+  config_schema: "1.0.0"
+  last_updated: "2025-10-30"
